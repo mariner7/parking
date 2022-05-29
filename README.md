@@ -1,64 +1,301 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+##Parking test
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+##Introducción
 
-## About Laravel
+<a href="https://documenter.getpostman.com/view/15185242/Uz5CLHvC">Documentación en Postman</a>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Administrar el acceso de vehículos a un estacionamiento de pago. El estacionamiento no se encuentra automatizado, por lo que existe un empleado encargado de registrar las entradas y salidas de vehículos.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Los vehículos oficiales no pagan, pero se registran sus estancias para llevar el control. (Una estancia consiste en una hora de entrada y una de salida)
+- Los residentes pagan a final de mes a razón de MXN$0.05 el minuto. La aplicación irá acumulando el tiempo (en minutos) que han permanecido estacionados.
+- Los no residentes pagan a la salida del estacionamiento a razón de MXN$0.5 por minuto. Se prevé que en el futuro puedan incluirse nuevos tipos de vehículos, por lo que la aplicación desarrollada deberá ser fácilmente extensible en ese aspecto.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Resumen
 
-## Learning Laravel
+Caso de uso "Registra entrada" 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. El empleado elige la opción "registrar entrada" e introduce el número de placa del coche que entra. 
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. La aplicación apunta la hora de entrada del vehículo. 
 
-## Laravel Sponsors
+Caso de uso "Registra salida" 
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+1. El empleado elige la opción "registrar salida" e introduce el número de placa del coche que sale. 
 
-### Premium Partners
+2. La aplicación realiza las acciones correspondientes al tipo de vehículo:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+- Oficial: asocia la estancia (hora de entrada y hora de salida) con el vehículo 
+- Residente: suma la duración de la estancia al tiempo total acumulado 
+- No residente: obtiene el importe a pagar
 
-## Contributing
+ 
+Caso de uso "Da de alta vehículo oficial" 
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. El empleado elige la opción "dar de alta vehículo oficial" e introduce su número de placa. 
 
-## Code of Conduct
+2. La aplicación añade el vehículo a la lista de vehículos oficiales 
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Caso de uso "Da de alta vehículo de residente" 
 
-## Security Vulnerabilities
+1. El empleado elige la opción "dar de alta vehículo de residente" e introduce su número de placa. 
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+2. La aplicación añade el vehículo a la lista de vehículos de residentes. 
 
-## License
+Caso de uso "Comienza mes" 
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. El empleado elige la opción "comienza mes". 
+
+2. La aplicación elimina las estancias registradas en los coches oficiales y pone a cero el tiempo estacionado por los vehículos de residentes. 
+
+Caso de uso "Pagos de residentes" 
+
+1. El empleado elige la opción "genera informe de pagos de residentes" e introduce el nombre del archivo en el que quiere generar el informe. 
+
+2. La aplicación genera un archivo que detalla el tiempo estacionado y el dinero a pagar por cada uno de los vehículos de residentes. El formato del archivo será el mostrado a continuación: 
+
+La aplicación contará con un programa principal basado en un menú que permitirá al empleado interactuar con la aplicación (dicho programa principal no forma parte de este ejercicio 
+
+Persistencia de datos 
+
+La información de cada una de las estancias de los vehículos será almacenada en una base de datos. Se recomienda usar MySQL. 
+Authentication
+
+Bearer Token
+Rate limit
+
+No hay límite para prueba de manera local
+POST
+
+127.0.0.1/api/vehicles/create
+127.0.0.1/api/vehicles/create
+
+Inserta un nuevo vehículo
+
+
+Example Request
+127.0.0.1/api/vehicles/create
+
+curl --location --request POST '127.0.0.1/api/vehicles/create' \
+--data-raw ''
+
+GET
+
+Get all vehicles
+127.0.0.1/api/vehicles
+HEADERS
+Accept
+application/json
+
+
+422 - email existente
+Example Request
+
+curl --location --request POST 'localhost/api/register' \
+--header 'Accept: application/json' \
+--data-urlencode 'name=admin' \
+--data-urlencode 'email=me@yo.com' \
+--data-urlencode 'password=$ym940ny' \
+--data-urlencode 'password_confirmation=$ym940ny'
+
+Example Response
+422 Unprocessable Content
+Body
+Header(10)
+
+{
+  "message": "The email has already been taken.",
+  "errors": {
+    "email": [
+      "The email has already been taken."
+    ]
+  }
+}
+
+POST
+
+Add a vehicle
+127.0.0.1/api/vehicles/create
+HEADERS
+Accept
+application/json
+BODYraw
+
+{
+    "license_plate":"123ABC",
+    "make":"Chrysler",
+    "type":"2"
+}
+
+
+
+201 - Add a resident vehicle
+Example Request
+
+curl --location --request POST 'localhost/api/vehicles/resident' \
+--header 'Accept: application/json' \
+--data-raw '{
+    "license_plate":"A36RFG",
+    "make":"Nissan"
+}'
+
+Example Response
+201 Created
+Body
+Header(10)
+
+{
+  "license_plate": "A36RFG",
+  "make": "Nissan",
+  "type": "2",
+  "updated_at": "2022-05-29T04:19:52.000000Z",
+  "created_at": "2022-05-29T04:19:52.000000Z",
+  "id": 9
+}
+
+POST
+
+Check-In
+127.0.0.1/api/check_in
+AUTHORIZATIONBearer Token
+Token
+<token>
+Bodyurlencoded
+license_plate
+123ABC
+
+
+201 - Creado
+Example Request
+
+curl --location --request POST '127.0.0.1/api/access/check_out' \
+--header 'Accept: application/json' \
+--data-urlencode 'license_plate=123ABC98'
+
+Example Response
+201 Created
+Body
+Header(10)
+
+{
+  "license_plate": "123ABC",
+  "check_in": "2022-05-28 12:05:51",
+  "updated_at": "2022-05-28T17:14:51.000000Z",
+  "created_at": "2022-05-28T17:14:51.000000Z",
+  "id": 4
+}
+
+PUT
+
+Check-Out
+127.0.0.1/api/access/check_out/6
+AUTHORIZATIONBearer Token
+Token
+<token>
+HEADERS
+Accept
+application/json
+
+
+201 - Actualizado correctamente
+Example Request
+
+curl --location --request PUT '127.0.0.1/api/access/check_out/5' \
+--header 'Accept: application/json'
+
+Example Response
+200 OK
+Body
+Header(10)
+
+{
+  "id": 5,
+  "license_plate": "123ABC",
+  "check_in": "2022-05-28 12:05:32",
+  "check_out": "2022-05-28 12:31:47",
+  "cumulative_month": null,
+  "created_at": "2022-05-28T17:30:32.000000Z",
+  "updated_at": "2022-05-28T17:31:47.000000Z"
+}
+
+GET
+
+Reset time counter
+127.0.0.1/api/vehicles/reset
+AUTHORIZATIONBearer Token
+Token
+<token>
+HEADERS
+Accept
+application/json
+
+
+Example Request
+200 - Reset time counter
+
+curl --location --request PUT '127.0.0.1/api/vehicles/reset/all'
+
+Example Response
+200 OK
+Body
+Header(10)
+View More
+
+[
+  {
+    "id": 1,
+    "license_plate": "796UNK",
+    "make": "Ford",
+    "type": 1,
+    "cumulative_time": 0,
+    "updated_at": null,
+    "created_at": null
+  },
+  {
+
+GET
+
+Generate Report
+No request URL found. It will show up here once added.
+
+
+Example Request
+200 - Generate Report
+
+curl --location --request GET '127.0.0.1/api/report'
+
+Example Response
+200 OK
+Body
+Header(10)
+
+381QMq                   0                        0
+567HGE                   0                        0
+123ABC                   623                      31.15
+566XPH                   0                        0
+G87BNM                   0                        0
+
+
+GET
+
+Search vehicle by ID
+localhost/api/vehicles/3
+
+
+Example Request
+200 - Search vehicle by ID
+
+curl --location --request GET 'localhost/api/vehicles/3'
+
+Example Response
+200 OK
+Body
+Header(10)
+
+{
+  "id": 3,
+  "license_plate": "567HGE",
+  "make": "Nissan",
+  "type": 2,
+  "updated_at": "2022-05-27T23:10:38.000000Z",
+  "created_at": null
+}
