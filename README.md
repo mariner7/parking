@@ -28,21 +28,6 @@ Al recibir la respuesta, copiar el token a todas la rutas que requieren autoriza
 
 ## Rutas que requieren autorización
 
-    Route::post(VEHICLE.'/{type}', [VehiclesController::class, 'store']);
-    Route::put(VEHICLEID, [VehiclesController::class, 'update']);
-    Route::delete(VEHICLEID, [VehiclesController::class, 'destroy']);
-
-    // Update cumulative time for residents
-    Route::get('update/{id}/{time}', [VehiclesController::class, 'addTime'])->name('toResidentsUpdate');
-    
-    // Reset cumulative time count
-    Route::put('/vehicles/reset/all', [VehiclesController::class, 'resetCounter']);
-
-    // Parking user type routes
-    Route::post(TYPES, [TypesController::class, 'store']);
-    Route::put(TYPE_NAME, [TypesController::class, 'update']);
-    Route::delete(TYPE_NAME, [TypesController::class, 'destroy']);
-
     POST <code>/vehicle/<tipo de vechiculo></code>
     PUT  <code>/vehicle/<id></code>
     DELETE <code>/vehicle/<id></code>
