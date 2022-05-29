@@ -1,8 +1,62 @@
-##Parking test
+## Parking test
 
-##Introducción
+## Introducción
 
 <a href="https://documenter.getpostman.com/view/15185242/Uz5CLHvC">Documentación en Postman</a>
+
+Requiere Docker y Composer
+
+Para levantar el proyecto, ejecutar en la terminal:
+        <code>. vendor/bin/sail up -d</code>
+
+o, con composer
+        <code>docker-compose up -d</code>
+
+## Crear un usuario
+
+en Postman, crear un usuario, para obtener el <em>Auth Token</em>
+
+<code>127.0.0.1/api/register</code>
+datos necesarios:
+- nombre
+- email
+- password
+- password_confirmation
+
+Al recibir la respuesta, copiar el token a todas la rutas que requieren autorización como
+<em>Bearer Token</em> en la sección de Autorización de Postman
+
+## Rutas que requieren autorización
+
+    Route::post(VEHICLE.'/{type}', [VehiclesController::class, 'store']);
+    Route::put(VEHICLEID, [VehiclesController::class, 'update']);
+    Route::delete(VEHICLEID, [VehiclesController::class, 'destroy']);
+
+    // Update cumulative time for residents
+    Route::get('update/{id}/{time}', [VehiclesController::class, 'addTime'])->name('toResidentsUpdate');
+    
+    // Reset cumulative time count
+    Route::put('/vehicles/reset/all', [VehiclesController::class, 'resetCounter']);
+
+    // Parking user type routes
+    Route::post(TYPES, [TypesController::class, 'store']);
+    Route::put(TYPE_NAME, [TypesController::class, 'update']);
+    Route::delete(TYPE_NAME, [TypesController::class, 'destroy']);
+
+    POST <code>/vehicle/<tipo de vechiculo></code>
+    PUT  <code>/vehicle/<id></code>
+    DELETE <code>/vehicle/<id></code>
+    GET <code>/update/<id>/<tiempo a acumular></code> (En Postman debe ser PUT)
+    PUT <code>/vehicle/reset/all</code>
+
+    POST <code>/access/check_in</code>
+    PUT <code>/access/check_out/<id></code>
+    GET <code>/report</code>
+
+    POST <code>/types</code>
+    PUT <code>/types/<nombre del tipo></code>
+    DELETE <code>/types/<nombre del tipo></code>
+
 
 Administrar el acceso de vehículos a un estacionamiento de pago. El estacionamiento no se encuentra automatizado, por lo que existe un empleado encargado de registrar las entradas y salidas de vehículos.
 
@@ -10,7 +64,7 @@ Los vehículos oficiales no pagan, pero se registran sus estancias para llevar e
 - Los residentes pagan a final de mes a razón de MXN$0.05 el minuto. La aplicación irá acumulando el tiempo (en minutos) que han permanecido estacionados.
 - Los no residentes pagan a la salida del estacionamiento a razón de MXN$0.5 por minuto. Se prevé que en el futuro puedan incluirse nuevos tipos de vehículos, por lo que la aplicación desarrollada deberá ser fácilmente extensible en ese aspecto.
 
-Resumen
+## Resumen
 
 Caso de uso "Registra entrada" 
 
@@ -29,25 +83,25 @@ Caso de uso "Registra salida"
 - No residente: obtiene el importe a pagar
 
  
-Caso de uso "Da de alta vehículo oficial" 
+## Caso de uso "Da de alta vehículo oficial" 
 
 1. El empleado elige la opción "dar de alta vehículo oficial" e introduce su número de placa. 
 
 2. La aplicación añade el vehículo a la lista de vehículos oficiales 
 
-Caso de uso "Da de alta vehículo de residente" 
+## Caso de uso "Da de alta vehículo de residente" 
 
 1. El empleado elige la opción "dar de alta vehículo de residente" e introduce su número de placa. 
 
 2. La aplicación añade el vehículo a la lista de vehículos de residentes. 
 
-Caso de uso "Comienza mes" 
+## Caso de uso "Comienza mes" 
 
 1. El empleado elige la opción "comienza mes". 
 
 2. La aplicación elimina las estancias registradas en los coches oficiales y pone a cero el tiempo estacionado por los vehículos de residentes. 
 
-Caso de uso "Pagos de residentes" 
+## Caso de uso "Pagos de residentes" 
 
 1. El empleado elige la opción "genera informe de pagos de residentes" e introduce el nombre del archivo en el que quiere generar el informe. 
 
@@ -55,18 +109,17 @@ Caso de uso "Pagos de residentes"
 
 La aplicación contará con un programa principal basado en un menú que permitirá al empleado interactuar con la aplicación (dicho programa principal no forma parte de este ejercicio 
 
-Persistencia de datos 
+## Persistencia de datos 
 
 La información de cada una de las estancias de los vehículos será almacenada en una base de datos. Se recomienda usar MySQL. 
-Authentication
+
+## Authentication
 
 Bearer Token
-Rate limit
 
-No hay límite para prueba de manera local
+## RUTAS EN POSTMAN
 POST
 
-127.0.0.1/api/vehicles/create
 127.0.0.1/api/vehicles/create
 
 Inserta un nuevo vehículo
